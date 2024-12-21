@@ -3,6 +3,7 @@
  *
  * @author DongJae Lee 
  * @version v1.0.0
+ * @since v1.0.0
  *
  *
  * {@code @created} 2024-12-18
@@ -30,6 +31,7 @@ public class FirstGui extends JFrame{
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
+		
 		
 	}
 }
