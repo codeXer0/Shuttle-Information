@@ -1,16 +1,17 @@
 /**
  * Gui 담당 클래스입니다.
  *
- * @author 이동재 
+ * @author DongJae Lee 
  * @version v1.0.0
  *
  *
  * {@code @created} 2024-12-18
  * {@code @lastModified} 2024-12-21
  *
+ *
  * {@changelog}
  * <ul>
- *   <li>2024-12-18: 최초 생성</li>
+ *   <li>2024-12-21 : 최초 생성</li>
  * </ul>
  */
 
