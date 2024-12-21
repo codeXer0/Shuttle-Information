@@ -125,7 +125,8 @@ public class FirstGui extends JFrame {
                 cardLayout.show(getContentPane(), "SchoolBus");
             }
         });
-
+        
+        // Back ¹öÆ° 
         btnBack1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
