@@ -11,13 +11,13 @@
  *
  * {@changelog}
  * <ul>
- *   <li>2024-11-24 : 置段 持失</li>
+ *   <li>2024 - 11 - 24 : 置段 持失</li>
  * </ul>
  */
 
 public class Main{	
 	public Main() {
-		new GuiPack(); 
+		new FirstGui(); 
 	}
 	public static void main(String[] args) {
 		new Main();

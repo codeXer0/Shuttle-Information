@@ -1,5 +1,5 @@
 /**
- * Gui 담당 클래스입니다.
+ * 프로그램 초기 화면 GUI 클래스입니다.
  *
  * @author DongJae Lee 
  * @version v1.0.0
@@ -16,12 +16,14 @@
  */
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
-public class GuiPack extends JFrame{
-	public GuiPack() {
+public class FirstGui extends JFrame{
+	public JButton btnBusRoute, btnBusInformation;
+	public FirstGui(){
 		this.setTitle("청주대학교 셔틀정보");
-		this.setSize(500, 500);
+		this.setSize(700, 500);
 		
 		ImageIcon iconCJU = new ImageIcon("src/images/cju.png");
 		this.setIconImage(iconCJU.getImage());
