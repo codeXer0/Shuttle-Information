@@ -1,5 +1,5 @@
 /**
- * ÇÁ·Î±×·¥ ÃÊ±â È­¸é GUI Å¬·¡½ºÀÔ´Ï´Ù.
+ * í”„ë¡œê·¸ë¨ ì´ˆê¸° í™”ë©´ GUI í´ë˜ìŠ¤ì…ë‹ˆë‹¤.
  *
  * @author DongJae Lee 
  * @version v1.0.0
@@ -7,110 +7,79 @@
  *
  *
  * {@code @created} 2024-12-18
- * {@code @lastModified} 2024-12-21
+ * {@code @lastModified} 2024-12-22
  *
  *
  * {@changelog}
  * <ul>
- *   <li>2024-12-21 : ÃÖÃÊ »ı¼º, ÃÊ±âÈ­¸é ±âº» GUI ±¸Çö</li>
+ *   <li>2024-12-21 : ìµœì´ˆ ìƒì„±, ì´ˆê¸°í™”ë©´ ê¸°ë³¸ GUI êµ¬í˜„</li>
+ *   <li>2024-12-22 : CampusShuttle íŒ¨ë„ì— ë²„ìŠ¤ ì´ë™ ì• ë‹ˆë©”ì´ì…˜ ì¶”ê°€ ë° ë…¸ì„ ë„ êµ¬í˜„</li>
+ *   <li>2024-12-22 : ëª¨ë“  ë²„íŠ¼ ê¸°ëŠ¥ ì •ìƒí™”, ë…¸ì„ ë„ ìˆ˜ì •, ì´ëª¨í‹°ì½˜ ê¸°ë°˜ ë²„ìŠ¤ ì‚¬ìš©</li>
+ *   <li>2024-12-22 : ë²„ìŠ¤ê°€ ì¢…ì ì—ì„œ ë°˜ëŒ€ë¡œ ì™•ë³µ ì´ë™ ê°€ëŠ¥ì¼€ ìˆ˜ì •</li>
  * </ul>
  */
 
-import java.awt.CardLayout;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.Timer;
 
 public class FirstGui extends JFrame {
-	JButton btnCampusShuttle, btnInfo, btnSchoolBus, btnBack1, btnBack2, btnBack3;
-	public FirstGui() {
-		this.setTitle("Ã»ÁÖ´ëÇĞ±³ ¼ÅÆ²Á¤º¸");
-		this.setSize(600, 400);
-		this.setLayout(new CardLayout());
-		
-		ImageIcon iconCJU = new ImageIcon("src/images/cju.png");
-		this.setIconImage(iconCJU.getImage());
-			
-		showMainScreen();
-		
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setVisible(true);
+    JButton btnCampusShuttle, btnInfo, btnSchoolBus, btnBack1, btnBack2, btnBack3;
+    JLabel cjubusA, cjubusB;
+    int busAPosition = 30, busBPosition = 970; // ì´ˆê¸° ìœ„ì¹˜
+    int busADirection = 10, busBDirection = -10; // ì´ë™ ë°©í–¥
 
-	}
-	/**
-	 * ÃÊ±â È­¸é¿¡´Â ¼¼°³ÀÇ ¹öÆ°ÀÌ º¸¿©Áı´Ï´Ù.
-	 *	°¢ ¹öÆ°À» ÀÛµ¿ ½Ã, ¼ÅÆ²¹ö½º ÇöÈ², ¹ö½º Á¤º¸ ¹× ½Ã°£Ç¥, ÅëÇĞ¹ö½º Á¤º¸°¡ º¸¿©Áö´Â ÆĞ³Î·Î ³Ñ¾î°©´Ï´Ù.
-	 *	ÀÌÀü ¹öÆ°À» »ç¿ëÇÏ¿© ÃÊ±â È­¸éÀ¸·Î µÇµ¹¾Æ ¿Ã ¼ö ÀÖ½À´Ï´Ù.
-	 *
-	 * {@code @created} 2024-12-21
-	 * {@code @lastModified} 2024-12-22
-	 *
-	 *
-	 * {@changelog}
-	 * <ul>
-	 *   <li>2024-12-21 : ¸Ş¼Òµå ÃÖÃÊ »ı¼º</li>
-	 * </ul>
-	 */
-	void showMainScreen() {
-		// Main Panel
+    public FirstGui() {
+        this.setTitle("ì²­ì£¼ëŒ€í•™êµ ì…”í‹€ì •ë³´");
+        this.setSize(1080, 550);
+        this.setLayout(new CardLayout());
+
+        showMainScreen();
+
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
+    }
+
+    void showMainScreen() {
+        // Main Panel
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(null);
         mainPanel.setBackground(Color.WHITE);
-        
-        // Buttons
-        btnCampusShuttle = new JButton("¼ÅÆ²¹ö½º ÇöÈ²");
-        btnInfo = new JButton("¹ö½º ½Ã°£Ç¥");
-        btnSchoolBus = new JButton("ÅëÇĞ ¼ÅÆ²");
 
-        btnCampusShuttle.setBounds(80, 150, 120, 50);
-        btnInfo.setBounds(240, 150, 120, 50);
-        btnSchoolBus.setBounds(400, 150, 120, 50);
+        // Buttons
+        btnCampusShuttle = new JButton("ì…”í‹€ë²„ìŠ¤ í˜„í™©");
+        btnInfo = new JButton("ë²„ìŠ¤ ì‹œê°„í‘œ");
+        btnSchoolBus = new JButton("í†µí•™ ì…”í‹€");
+
+        btnCampusShuttle.setBounds(100, 200, 200, 50);
+        btnInfo.setBounds(400, 200, 200, 50);
+        btnSchoolBus.setBounds(700, 200, 200, 50);
 
         mainPanel.add(btnCampusShuttle);
         mainPanel.add(btnInfo);
         mainPanel.add(btnSchoolBus);
 
         // Sub Panels
-        JPanel campusShuttlePanel = new JPanel();
-        campusShuttlePanel.setLayout(null);
-        btnBack1 = new JButton("ÀÌÀü");
-        btnBack1.setBounds(10, 10, 60, 40);
-        campusShuttlePanel.add(btnBack1);
-        
-        JPanel shuttleInfoPanel = new JPanel();
-        btnBack2 = new JButton("ÀÌÀü");
-        shuttleInfoPanel.add(btnBack2);
-        
-        JPanel externalShuttlePanel = new JPanel();
-        btnBack3 = new JButton("ÀÌÀü");
-        externalShuttlePanel.add(btnBack3);
-        
-        campusShuttlePanel.setBackground(Color.WHITE);
-        shuttleInfoPanel.setBackground(Color.WHITE);
-        externalShuttlePanel.setBackground(Color.WHITE);
+        JPanel campusShuttlePanel = createCampusShuttlePanel();
+        JPanel shuttleInfoPanel = createInfoPanel();
+        JPanel schoolBusPanel = createSchoolBusPanel();
 
-        
         this.add(mainPanel, "Main");
         this.add(campusShuttlePanel, "CampusShuttle");
         this.add(shuttleInfoPanel, "ShuttleInformation");
-        this.add(externalShuttlePanel, "SchoolBus");
+        this.add(schoolBusPanel, "SchoolBus");
 
         CardLayout cardLayout = (CardLayout) this.getContentPane().getLayout();
 
-        // ¼ÅÆ²¹ö½º ÇöÈ² ActionListener
         btnCampusShuttle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(getContentPane(), "CampusShuttle");
             }
         });
-        
-        // ¼ÅÆ²¹ö½º ½Ã°£Ç¥ ActionListener
+
         btnInfo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -118,35 +87,151 @@ public class FirstGui extends JFrame {
             }
         });
 
-        // ÅëÇĞ¹ö½º Á¤º¸ ActionListener
         btnSchoolBus.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(getContentPane(), "SchoolBus");
             }
         });
-        
-        // Back ¹öÆ° 
+    }
+
+    JPanel createCampusShuttlePanel() {
+        JPanel panel = new JPanel(null);
+        panel.setBackground(Color.WHITE);
+
+        // Back Button
+        btnBack1 = new JButton("ì´ì „");
+        btnBack1.setBounds(10, 10, 80, 40);
+        panel.add(btnBack1);
+
+        CardLayout cardLayout = (CardLayout) this.getContentPane().getLayout();
         btnBack1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(getContentPane(), "Main");
             }
         });
+
+        // ë…¸ì„ ë„ ì„ ê³¼ ì  ê·¸ë¦¬ê¸°
+        JLabel routeLabel = new JLabel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor(Color.BLUE);
+
+                // ì •ë¥˜ì¥ì˜ X ì¢Œí‘œ ë°°ì—´
+                int[] stopsX = {30, 230, 430, 630, 830, 1030 };
+
+                // ìœ„ìª½ ë…¸ì„ 
+                g.drawLine(stopsX[0], 150, stopsX[stopsX.length - 1], 150);
+                for (int x : stopsX) {
+                    g.fillOval(x - 5, 145, 10, 10); // ìœ„ìª½ ì 
+                }
+
+                // ì•„ë˜ìª½ ë…¸ì„ 
+                g.drawLine(stopsX[0], 350, stopsX[stopsX.length - 1], 350);
+                for (int x : stopsX) {
+                    g.fillOval(x - 5, 345, 10, 10); // ì•„ë˜ìª½ ì 
+                }
+            }
+        };
+        routeLabel.setBounds(0, 0, 1100, 600);
+        panel.add(routeLabel);
+
+        // ì •ë¥˜ì¥ ì¶”ê°€ (ìœ„ìª½ ë…¸ì„ )
+        String[] stopsTop = {"í•™êµ ì •ë¬¸", "ì¤‘ì•™ë„ì„œê´€", "ë³´ê±´ëŒ€í•™", "í•™ìƒíšŒê´€", "ì˜ˆìˆ ëŒ€í•™", "ê¸°ìˆ™ì‚¬"};
+        int[] stopsX = {30, 230, 430, 630, 830, 1030};
+        for (int i = 0; i < stopsTop.length; i++) {
+            JLabel stopLabel = new JLabel(stopsTop[i], SwingConstants.CENTER);
+            stopLabel.setBounds(stopsX[i] - 50, 120, 100, 30);
+            panel.add(stopLabel);
+        }
+
+        // ì •ë¥˜ì¥ ì¶”ê°€ (ì•„ë˜ìª½ ë…¸ì„ )
+        String[] stopsBottom = {"ê¸°ìˆ™ì‚¬", "ì˜ˆìˆ ëŒ€í•™", "í•™ìƒíšŒê´€", "ë³´ê±´ëŒ€í•™", "ì¤‘ì•™ë„ì„œê´€", "í•™êµ ì •ë¬¸"};
+        for (int i = 0; i < stopsBottom.length; i++) {
+            JLabel stopLabel = new JLabel(stopsBottom[i], SwingConstants.CENTER);
+            stopLabel.setBounds(stopsX[i] - 50, 320, 100, 30);
+            panel.add(stopLabel);
+        }
+
+        // ë²„ìŠ¤ ì´ëª¨í‹°ì½˜ ì¶”ê°€
+        cjubusA = new JLabel("ğŸšŒ");
+        cjubusB = new JLabel("ğŸšŒ");
+
+        cjubusA.setBounds(busAPosition, 125, 40, 40); // ìœ„ìª½ ë²„ìŠ¤ ì´ˆê¸° ìœ„ì¹˜
+        cjubusB.setBounds(busBPosition, 325, 40, 40); // ì•„ë˜ìª½ ë²„ìŠ¤ ì´ˆê¸° ìœ„ì¹˜
+
+        panel.add(cjubusA);
+        panel.add(cjubusB);
+
+        // ì• ë‹ˆë©”ì´ì…˜ íƒ€ì´ë¨¸
+        Timer timer = new Timer(300, new ActionListener() { // ì†ë„ë¥¼ ëŠë¦¬ê²Œ ì„¤ì •
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // ë²„ìŠ¤ A ì´ë™
+                busAPosition += busADirection;
+                if (busAPosition >= 1030 || busAPosition <= 30) busADirection *= -1;
+                cjubusA.setBounds(busAPosition, 125, 40, 40);
+
+                // ë²„ìŠ¤ B ì´ë™
+                busBPosition += busBDirection;
+                if (busBPosition <= 30 || busBPosition >= 1030) busBDirection *= -1;
+                cjubusB.setBounds(busBPosition, 325, 40, 40);
+            }
+        });
+        timer.start();
+
+        return panel;
+    }
+
+    JPanel createInfoPanel() {
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.LIGHT_GRAY);
+        panel.setLayout(new BorderLayout());
+
+        btnBack2 = new JButton("ì´ì „");
+        btnBack2.setBounds(10, 10, 80, 40);
+        panel.add(btnBack2);
+
+        CardLayout cardLayout = (CardLayout) this.getContentPane().getLayout();
         btnBack2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(getContentPane(), "Main");
             }
         });
+
+        JLabel label = new JLabel("ë²„ìŠ¤ ì‹œê°„í‘œ ì •ë³´ í™”ë©´", SwingConstants.CENTER);
+        panel.add(label, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    JPanel createSchoolBusPanel() {
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.LIGHT_GRAY);
+        panel.setLayout(new BorderLayout());
+
+        btnBack3 = new JButton("ì´ì „");
+        btnBack3.setBounds(10, 10, 80, 40);
+        panel.add(btnBack3);
+
+        CardLayout cardLayout = (CardLayout) this.getContentPane().getLayout();
         btnBack3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(getContentPane(), "Main");
             }
         });
-	}
-      	public static void main(String[] args) {
-      		new FirstGui();
-        }
+
+        JLabel label = new JLabel("í†µí•™ ì…”í‹€ ì •ë³´ í™”ë©´", SwingConstants.CENTER);
+        panel.add(label, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    public static void main(String[] args) {
+        new FirstGui();
+    }
 }
