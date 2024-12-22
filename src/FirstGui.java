@@ -7,7 +7,7 @@
  *
  *
  * {@code @created} 2024-12-18
- * {@code @lastModified} 2024-12-22
+ * {@code @lastModified} 2024-12-23
  *
  *
  * {@changelog}
@@ -16,14 +16,18 @@
  *   <li>2024-12-22 : CampusShuttle 패널에 버스 이동 애니메이션 추가 및 노선도 구현</li>
  *   <li>2024-12-22 : 모든 버튼 기능 정상화, 노선도 수정, 이모티콘 기반 버스 사용</li>
  *   <li>2024-12-23 : 버스가 종점에서 반대로 왕복 이동 가능케 수정</li>
+ *   <li>2024-12-23 : 버스 시간표 파일 읽기 및 JTable 표시 기능 추가</li>
  * </ul>
  */
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import javax.swing.*;
-import javax.swing.Timer;
+import javax.swing.table.DefaultTableModel;
 
 public class FirstGui extends JFrame {
     JButton btnCampusShuttle, btnInfo, btnSchoolBus, btnBack1, btnBack2, btnBack3;
@@ -188,42 +192,82 @@ public class FirstGui extends JFrame {
     JPanel createInfoPanel() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.LIGHT_GRAY);
-        panel.setLayout(new BorderLayout());
 
+        // Back Button
         btnBack2 = new JButton("이전");
         btnBack2.setBounds(10, 10, 80, 40);
-        panel.add(btnBack2);
 
-        CardLayout cardLayout = (CardLayout) this.getContentPane().getLayout();
+        
         btnBack2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
                 cardLayout.show(getContentPane(), "Main");
             }
         });
 
-        JLabel label = new JLabel("버스 시간표 정보 화면", SwingConstants.CENTER);
-        panel.add(label, BorderLayout.CENTER);
+        // ComboBox for selecting buses
+        String[] busOptions = {"청대버스A", "청대버스B"};
+        JComboBox<String> busSelector = new JComboBox<>(busOptions);
+
+        // Table for displaying bus schedules
+        String[] columnNames = {"시간"};
+        JTable scheduleTable = new JTable(new Object[0][1], columnNames);
+        JScrollPane tableScrollPane = new JScrollPane(scheduleTable);
+
+        busSelector.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedBus = (String) busSelector.getSelectedItem();
+                TimeTable(scheduleTable, selectedBus);
+            }
+        });
+
+        // Top panel containing the combo box
+        JPanel topPanel = new JPanel();
+        topPanel.add(busSelector);
+        topPanel.add(btnBack2);
+
+        panel.add(topPanel, BorderLayout.NORTH);
+        panel.add(tableScrollPane, BorderLayout.CENTER);
 
         return panel;
     }
 
-    JPanel createSchoolBusPanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.LIGHT_GRAY);
-        panel.setLayout(new BorderLayout());
+    private void TimeTable(JTable table, String busName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/shuttleTime.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith(busName)) {
+                    String[] times = line.split(",")[1].trim().split(" ");
+                    Object[][] data = new Object[times.length][1];
+                    for (int i = 0; i < times.length; i++) {
+                        data[i][0] = times[i];
+                    }
+                    table.setModel(new DefaultTableModel(data, new String[]{"시간"}));
+                    break;
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
+    JPanel createSchoolBusPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.LIGHT_GRAY);
         btnBack3 = new JButton("이전");
         btnBack3.setBounds(10, 10, 80, 40);
-        panel.add(btnBack3);
-
-        CardLayout cardLayout = (CardLayout) this.getContentPane().getLayout();
+        
         btnBack3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
                 cardLayout.show(getContentPane(), "Main");
             }
         });
+
+        panel.add(btnBack3);
 
         JLabel label = new JLabel("통학 셔틀 정보 화면", SwingConstants.CENTER);
         panel.add(label, BorderLayout.CENTER);
