@@ -2,6 +2,8 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -44,7 +46,7 @@ public class FirstGui extends JFrame {
     JLabel cjubusA, cjubusB;
     int busAPosition = 30, busBPosition = 970; // 초기 위치
     int busADirection = 10, busBDirection = -10; // 이동 방향
-
+    ImageIcon Cjulogo;
     public FirstGui() {
         this.setTitle("청주대학교 셔틀정보");
         this.setSize(1080, 550);
@@ -57,7 +59,6 @@ public class FirstGui extends JFrame {
         this.setLocationRelativeTo(null); // 화면에 출력시킬 때 위치 가운데로 고정
 
         showMainScreen();
-        //backGroundImg();    
         
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
@@ -78,14 +79,33 @@ public class FirstGui extends JFrame {
      *   <li>2024-12-21 : 최초 생성, 메인화면 기본 GUI 구현</li>
      *   <li>2024-12-23 : 버튼 디자인 수정</li>
      *   <li>2024-12-24 : 통학셔틀버스 버튼 삭제</li>
+     *   <li>2024-12-24 : 우측 상단에 청주대학교 로고 생성</li>
+     *   <li>2024-12-25 : 배경화면에 이미지&로그 삽입</li>
      * </ul>
      */
     void showMainScreen() {
         // Main Panel
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(null);
-        mainPanel.setBackground(Color.WHITE);
+        JPanel mainPanel = new JPanel(null);
 
+        // 배경 이미지 추가
+        ImageIcon originalBackground = new ImageIcon("src/images/청대정문.jpg"); // 원본 이미지 경로
+        Image scaledImage = originalBackground.getImage().getScaledInstance(1080, 550, Image.SCALE_SMOOTH); // 프레임 크기에 맞게 조정
+        ImageIcon scaledBackground = new ImageIcon(scaledImage);
+        JLabel backgroundLabel = new JLabel(scaledBackground);
+        backgroundLabel.setBounds(0, 0, 1080, 550); // 프레임 크기와 일치
+        mainPanel.add(backgroundLabel);
+
+        // 청대 로고 추가
+        Cjulogo = new ImageIcon("src/images/청대로고.png");
+        JLabel labelicon = new JLabel(Cjulogo);
+        labelicon.setBounds(800, 10, 300, 50); // 우측 상단에 로고 배치
+        mainPanel.add(labelicon);
+
+        JLabel ProgramName = new JLabel("청주대학교 셔틀버스 앱");
+        ProgramName.setBounds(30, 30, 200, 50);
+        
+        mainPanel.add(ProgramName);
+       
         // 초기화면 버튼
         btnCampusShuttle = new JButton("셔틀버스 현황");
         btnInfo = new JButton("버스 시간표");
@@ -101,11 +121,19 @@ public class FirstGui extends JFrame {
         btnCampusShuttle.setFocusPainted(false);
         btnInfo.setFocusPainted(false);
 
+        // 버튼 위치 설정
         btnCampusShuttle.setBounds(250, 200, 200, 50);
         btnInfo.setBounds(650, 200, 200, 50);
 
+        // 버튼 추가
         mainPanel.add(btnCampusShuttle);
         mainPanel.add(btnInfo);
+
+        // Z-order 설정으로 배경 이미지를 뒤로 보냄
+        mainPanel.setComponentZOrder(btnCampusShuttle, 0);
+        mainPanel.setComponentZOrder(btnInfo, 0);
+        mainPanel.setComponentZOrder(labelicon, 0);
+        mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1); // 맨 아래 배치
 
         // 교내 셔틀버스 현황 패널 & 셔틀버스 정보 패널 생성
         JPanel campusShuttlePanel = createCampusShuttlePanel();
@@ -132,6 +160,8 @@ public class FirstGui extends JFrame {
         });
     }
 
+
+
     /**
      * 셔틀버스 현황을 나타내는 createCampusShuttlePanel() 메소드입니다.
      *
@@ -148,12 +178,18 @@ public class FirstGui extends JFrame {
      *   <li>2024-12-22 : CampusShuttle 패널에 버스 이동 애니메이션 추가 및 노선도 구현</li>
      *   <li>2024-12-22 : 노선도 수정, 이모티콘 기반 버스 사용</li>
      *   <li>2024-12-23 : 버스가 종점에서 반대로 왕복 이동 가능케 수정</li>
+     *   <li>2024-12-24 : 우측 상단에 청주대학교 로고 생성</li>
      * </ul>
      */
     JPanel createCampusShuttlePanel() {
         JPanel panel = new JPanel(null);
         panel.setBackground(Color.WHITE);
 
+        Cjulogo = new ImageIcon("src/images/청대로고.png");
+        JLabel labelicon = new JLabel(Cjulogo);
+        labelicon.setBounds(800, 10, 300, 50);
+        
+        panel.add(labelicon);
         // Back Button
         btnBack1 = new JButton("🏠");
         btnBack1.setBounds(10, 10, 80, 40);
@@ -261,12 +297,20 @@ public class FirstGui extends JFrame {
      * <ul>
      *   <li>2024-12-21 : 최초 메소드 생성</li>
      *   <li>2024-12-24 : 셔틀버스 시간표 패널 새로 생성</li>
+     *   <li>2024-12-24 : 시간표 텍스트파일을 읽어와 ArrayList에 저장, JTable 생성</li>
+     *   <li>2024-12-24 : 버스 A, B별 시간표 변경 시 오류 수정</li>
+     *   <li>2024-12-24 : 우측 상단에 청주대학교 로고 생성</li>
      * </ul>
      */
     JPanel createSchedulePanel() {
         JPanel panel = new JPanel(null);
         panel.setBackground(Color.WHITE);
 
+        Cjulogo = new ImageIcon("src/images/청대로고.png");
+        JLabel labelicon = new JLabel(Cjulogo);
+        labelicon.setBounds(800, 10, 300, 50);
+        
+        panel.add(labelicon);
         // 홈으로 돌아가기 버튼
         JButton btnBack2 = new JButton("🏠");
         btnBack2.setBounds(10, 10, 80, 40);
@@ -276,6 +320,7 @@ public class FirstGui extends JFrame {
         btnBack2.setFont(new Font("Aharoni 굵게", Font.BOLD, 20));
 
         btnBack2.setFocusPainted(false);
+        
         panel.add(btnBack2);
 
         btnBack2.addActionListener(new ActionListener() {
@@ -292,7 +337,7 @@ public class FirstGui extends JFrame {
         titleLabel.setBounds(300, 20, 480, 50);
         panel.add(titleLabel);
 
-     // 콤보박스
+        // 콤보박스
         JComboBox<String> busSelector = new JComboBox<>(new String[]{"청대버스 A", "청대버스 B"});
         busSelector.setBounds(480, 80, 120, 30);
         panel.add(busSelector);
@@ -309,25 +354,26 @@ public class FirstGui extends JFrame {
         ArrayList<String[]> aBusSchedule = loadScheduleFromFile("src\\a_bus_schedule.txt");
         ArrayList<String[]> bBusSchedule = loadScheduleFromFile("src\\b_bus_schedule.txt");
 
+        // 초기 데이터 로딩
+        for (String[] row : aBusSchedule) {
+            tableModel.addRow(row);
+        }
+
         // 콤보박스 이벤트 리스너
         busSelector.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tableModel.setRowCount(0); // 기존 테이블 데이터 삭제
-                ArrayList<String[]> selectedSchedule = "A버스".equals(busSelector.getSelectedItem()) ? aBusSchedule : bBusSchedule;
+                tableModel.setRowCount(0); // 기존 데이터 삭제
+                ArrayList<String[]> selectedSchedule = "청대버스 A".equals(busSelector.getSelectedItem()) ? aBusSchedule : bBusSchedule;
                 for (String[] row : selectedSchedule) {
                     tableModel.addRow(row);
                 }
             }
         });
 
-        // 초기 데이터로 A버스 시간표 표시
-        for (String[] row : aBusSchedule) {
-            tableModel.addRow(row);
-        }
-
         return panel;
     }
+
 
     /**
      * 텍스트 파일에서 시간표 데이터를 읽어오는 메소드입니다.
