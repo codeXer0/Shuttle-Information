@@ -1,3 +1,26 @@
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+import javax.swing.table.DefaultTableModel;
+
 /**
  * 프로그램 메인 홈 화면 & 각 버튼 클릭 시 생성되는 패널 안의 기능들과 GUI 클래스입니다.
  *
@@ -5,32 +28,19 @@
  * @version v1.0.0
  * @since v1.0.0
  *
- *
  * {@code @created} 2024-12-18
- * {@code @lastModified} 2024-12-23
- *
+ * {@code @lastModified} 2024-12-24
  *
  * {@changelog}
  * <ul>
  *   <li>2024-12-21 : 최초 생성, 초기화면 기본 GUI 구현</li>
- *   <li>2024-12-22 : CampusShuttle 패널에 버스 이동 애니메이션 추가 및 노선도 구현</li>
- *   <li>2024-12-22 : 모든 버튼 기능 정상화, 노선도 수정, 이모티콘 기반 버스 사용</li>
- *   <li>2024-12-23 : 버스가 종점에서 반대로 왕복 이동 가능케 수정</li>
- *   <li>2024-12-23 : 버스 시간표 파일 읽기 및 JTable 표시 기능 추가</li>
+ *   <li>2024-12-21 : showMainScreen() 메소드 생성</li>
+ *   <li>2024-12-22 : 모든 버튼 기능 정상화</li>
+ *   <li>2024-12-22 : backGroundImg() 메소드 생성</li>
  * </ul>
  */
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
 public class FirstGui extends JFrame {
-    JButton btnCampusShuttle, btnInfo, btnSchoolBus, btnBack1, btnBack2, btnBack3;
+    JButton btnCampusShuttle, btnInfo, btnBack1, btnBack2;
     JLabel cjubusA, cjubusB;
     int busAPosition = 30, busBPosition = 970; // 초기 위치
     int busADirection = 10, busBDirection = -10; // 이동 방향
@@ -40,40 +50,70 @@ public class FirstGui extends JFrame {
         this.setSize(1080, 550);
         this.setLayout(new CardLayout());
 
-        showMainScreen();
+        ImageIcon iconCJU = new ImageIcon("src/images/cju.png");
+        this.setIconImage(iconCJU.getImage());
 
+        this.setResizable(false); // 사이즈 수정 불가
+        this.setLocationRelativeTo(null); // 화면에 출력시킬 때 위치 가운데로 고정
+
+        showMainScreen();
+        //backGroundImg();    
+        
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
     }
 
+    /**
+     * 홈 화면의 GUI를 구성하는 showMainScreen() 메소드입니다.
+     *
+     * @author DongJae Lee 
+     * @version v1.0.0
+     * @since v1.0.0
+     *
+     * {@code @created} 2024-12-21
+     * {@code @lastModified} 2024-12-23
+     *
+     * {@changelog}
+     * <ul>
+     *   <li>2024-12-21 : 최초 생성, 메인화면 기본 GUI 구현</li>
+     *   <li>2024-12-23 : 버튼 디자인 수정</li>
+     *   <li>2024-12-24 : 통학셔틀버스 버튼 삭제</li>
+     * </ul>
+     */
     void showMainScreen() {
         // Main Panel
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(null);
         mainPanel.setBackground(Color.WHITE);
 
-        // Buttons
+        // 초기화면 버튼
         btnCampusShuttle = new JButton("셔틀버스 현황");
         btnInfo = new JButton("버스 시간표");
-        btnSchoolBus = new JButton("통학 셔틀");
 
-        btnCampusShuttle.setBounds(100, 200, 200, 50);
-        btnInfo.setBounds(400, 200, 200, 50);
-        btnSchoolBus.setBounds(700, 200, 200, 50);
+        btnCampusShuttle.setBackground(new Color(49, 98, 199));
+        btnCampusShuttle.setForeground(Color.WHITE);
+        btnCampusShuttle.setFont(new Font("Aharoni 굵게", Font.BOLD, 20));
+
+        btnInfo.setBackground(new Color(49, 98, 199));
+        btnInfo.setForeground(Color.WHITE);
+        btnInfo.setFont(new Font("Aharoni 굵게", Font.BOLD, 20));
+
+        btnCampusShuttle.setFocusPainted(false);
+        btnInfo.setFocusPainted(false);
+
+        btnCampusShuttle.setBounds(250, 200, 200, 50);
+        btnInfo.setBounds(650, 200, 200, 50);
 
         mainPanel.add(btnCampusShuttle);
         mainPanel.add(btnInfo);
-        mainPanel.add(btnSchoolBus);
 
-        // Sub Panels
+        // 교내 셔틀버스 현황 패널 & 셔틀버스 정보 패널 생성
         JPanel campusShuttlePanel = createCampusShuttlePanel();
-        JPanel shuttleInfoPanel = createInfoPanel();
-        JPanel schoolBusPanel = createSchoolBusPanel();
+        JPanel shuttleSchedulePanel = createSchedulePanel();
 
         this.add(mainPanel, "Main");
         this.add(campusShuttlePanel, "CampusShuttle");
-        this.add(shuttleInfoPanel, "ShuttleInformation");
-        this.add(schoolBusPanel, "SchoolBus");
+        this.add(shuttleSchedulePanel, "ShuttleSchedule");
 
         CardLayout cardLayout = (CardLayout) this.getContentPane().getLayout();
 
@@ -87,25 +127,43 @@ public class FirstGui extends JFrame {
         btnInfo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cardLayout.show(getContentPane(), "ShuttleInformation");
-            }
-        });
-
-        btnSchoolBus.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(getContentPane(), "SchoolBus");
+                cardLayout.show(getContentPane(), "ShuttleSchedule");
             }
         });
     }
 
+    /**
+     * 셔틀버스 현황을 나타내는 createCampusShuttlePanel() 메소드입니다.
+     *
+     * @author DongJae Lee 
+     * @version v1.0.0
+     * @since v1.0.0
+     *
+     * {@code @created} 2024-12-22
+     * {@code @lastModified} 2024-12-23
+     *
+     * {@changelog}
+     * <ul>
+     *   <li>2024-12-22 : 최초 생성</li>
+     *   <li>2024-12-22 : CampusShuttle 패널에 버스 이동 애니메이션 추가 및 노선도 구현</li>
+     *   <li>2024-12-22 : 노선도 수정, 이모티콘 기반 버스 사용</li>
+     *   <li>2024-12-23 : 버스가 종점에서 반대로 왕복 이동 가능케 수정</li>
+     * </ul>
+     */
     JPanel createCampusShuttlePanel() {
         JPanel panel = new JPanel(null);
         panel.setBackground(Color.WHITE);
 
         // Back Button
-        btnBack1 = new JButton("이전");
+        btnBack1 = new JButton("🏠");
         btnBack1.setBounds(10, 10, 80, 40);
+
+        btnBack1.setBackground(new Color(49, 98, 199));
+        btnBack1.setForeground(Color.WHITE);
+        btnBack1.setFont(new Font("Aharoni 굵게", Font.BOLD, 20));
+
+        btnBack1.setFocusPainted(false);
+
         panel.add(btnBack1);
 
         CardLayout cardLayout = (CardLayout) this.getContentPane().getLayout();
@@ -124,7 +182,7 @@ public class FirstGui extends JFrame {
                 g.setColor(Color.BLUE);
 
                 // 정류장의 X 좌표 배열
-                int[] stopsX = {30, 230, 430, 630, 830, 1030 };
+                int[] stopsX = {30, 230, 430, 630, 830, 1030};
 
                 // 위쪽 노선
                 g.drawLine(stopsX[0], 150, stopsX[stopsX.length - 1], 150);
@@ -188,16 +246,38 @@ public class FirstGui extends JFrame {
 
         return panel;
     }
+    
+    /**
+     * 버스 시간표를 보여주는 createSchedulePanel() 메소드입니다.
+     *
+     * @author DongJae Lee 
+     * @version v1.0.0
+     * @since v1.0.0
+     *
+     * {@code @created} 2024-12-24
+     * {@code @lastModified} 2024-12-24
+     *
+     * {@changelog}
+     * <ul>
+     *   <li>2024-12-21 : 최초 메소드 생성</li>
+     *   <li>2024-12-24 : 셔틀버스 시간표 패널 새로 생성</li>
+     * </ul>
+     */
+    JPanel createSchedulePanel() {
+        JPanel panel = new JPanel(null);
+        panel.setBackground(Color.WHITE);
 
-    JPanel createInfoPanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.LIGHT_GRAY);
-
-        // Back Button
-        btnBack2 = new JButton("이전");
+        // 홈으로 돌아가기 버튼
+        JButton btnBack2 = new JButton("🏠");
         btnBack2.setBounds(10, 10, 80, 40);
-
         
+        btnBack2.setBackground(new Color(49, 98, 199));
+        btnBack2.setForeground(Color.WHITE);
+        btnBack2.setFont(new Font("Aharoni 굵게", Font.BOLD, 20));
+
+        btnBack2.setFocusPainted(false);
+        panel.add(btnBack2);
+
         btnBack2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -206,74 +286,79 @@ public class FirstGui extends JFrame {
             }
         });
 
-        // ComboBox for selecting buses
-        String[] busOptions = {"청대버스A", "청대버스B"};
-        JComboBox<String> busSelector = new JComboBox<>(busOptions);
+        // 제목 라벨
+        JLabel titleLabel = new JLabel("< 셔틀버스 시간표 >", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Aharoni 굵게", Font.BOLD, 24));
+        titleLabel.setBounds(300, 20, 480, 50);
+        panel.add(titleLabel);
 
-        // Table for displaying bus schedules
-        String[] columnNames = {"시간"};
-        JTable scheduleTable = new JTable(new Object[0][1], columnNames);
-        JScrollPane tableScrollPane = new JScrollPane(scheduleTable);
+     // 콤보박스
+        JComboBox<String> busSelector = new JComboBox<>(new String[]{"청대버스 A", "청대버스 B"});
+        busSelector.setBounds(480, 80, 120, 30);
+        panel.add(busSelector);
 
+        // 테이블 및 모델 설정
+        String[] columnNames = {"기점", "배차", "종점"};
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        JTable table = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(100, 140, 880, 300);
+        panel.add(scrollPane);
+
+        // 시간표 데이터를 저장할 ArrayList
+        ArrayList<String[]> aBusSchedule = loadScheduleFromFile("src\\a_bus_schedule.txt");
+        ArrayList<String[]> bBusSchedule = loadScheduleFromFile("src\\b_bus_schedule.txt");
+
+        // 콤보박스 이벤트 리스너
         busSelector.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selectedBus = (String) busSelector.getSelectedItem();
-                TimeTable(scheduleTable, selectedBus);
-            }
-        });
-
-        // Top panel containing the combo box
-        JPanel topPanel = new JPanel();
-        topPanel.add(busSelector);
-        topPanel.add(btnBack2);
-
-        panel.add(topPanel, BorderLayout.NORTH);
-        panel.add(tableScrollPane, BorderLayout.CENTER);
-
-        return panel;
-    }
-
-    private void TimeTable(JTable table, String busName) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/shuttleTime.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.startsWith(busName)) {
-                    String[] times = line.split(",")[1].trim().split(" ");
-                    Object[][] data = new Object[times.length][1];
-                    for (int i = 0; i < times.length; i++) {
-                        data[i][0] = times[i];
-                    }
-                    table.setModel(new DefaultTableModel(data, new String[]{"시간"}));
-                    break;
+                tableModel.setRowCount(0); // 기존 테이블 데이터 삭제
+                ArrayList<String[]> selectedSchedule = "A버스".equals(busSelector.getSelectedItem()) ? aBusSchedule : bBusSchedule;
+                for (String[] row : selectedSchedule) {
+                    tableModel.addRow(row);
                 }
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    JPanel createSchoolBusPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Color.LIGHT_GRAY);
-        btnBack3 = new JButton("이전");
-        btnBack3.setBounds(10, 10, 80, 40);
-        
-        btnBack3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
-                cardLayout.show(getContentPane(), "Main");
-            }
         });
 
-        panel.add(btnBack3);
-
-        JLabel label = new JLabel("통학 셔틀 정보 화면", SwingConstants.CENTER);
-        panel.add(label, BorderLayout.CENTER);
+        // 초기 데이터로 A버스 시간표 표시
+        for (String[] row : aBusSchedule) {
+            tableModel.addRow(row);
+        }
 
         return panel;
     }
+
+    /**
+     * 텍스트 파일에서 시간표 데이터를 읽어오는 메소드입니다.
+     * @param filename ( a_bus_schedule.txt & b_bus_schedule.txt )
+     * @return 시간표 데이터를 담은 ArrayList
+     * 
+     *
+     * {@code @created} 2024-12-24
+     * {@code @lastModified} 2024-12-24
+     * 
+     * {@changelog}
+     * <ul>
+     *   <li>2024-12-24 : 최초 메소드 생성 및 기능 구현</li>
+     * </ul>
+     */
+    private ArrayList<String[]> loadScheduleFromFile(String filename) {
+        ArrayList<String[]> schedule = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(","); // 콤마로 구분된 데이터 파싱
+                if (parts.length == 3) {
+                    schedule.add(parts);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return schedule;
+    }
+
 
     public static void main(String[] args) {
         new FirstGui();
