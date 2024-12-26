@@ -56,7 +56,7 @@ public class FirstGui extends JFrame {
         this.setIconImage(iconCJU.getImage());
 
         this.setResizable(false); // 사이즈 수정 불가
-        this.setLocationRelativeTo(null); // 화면에 출력시킬 때 위치 가운데로 고정
+        this.setLocationRelativeTo(null); // 화면에 출력시킬때 위치 가운데로 고정
 
         showMainScreen();
         
