@@ -65,7 +65,7 @@ public class FirstGui extends JFrame {
     }
 
     /**
-     * 홈 화면의 GUI를 구성하는 showMainScreen() 메소드입니다.
+     * 홈 화면의 GUI를 구성하는 showMainScreen()메소드입니다.
      *
      * @author DongJae Lee 
      * @version v1.0.0
