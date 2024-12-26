@@ -95,7 +95,7 @@ public class FirstGui extends JFrame {
         backgroundLabel.setBounds(0, 0, 1080, 550); // 프레임 크기와 일치
         mainPanel.add(backgroundLabel);
 
-        // 청대 로고 추가
+        // 청대로고 추가
         Cjulogo = new ImageIcon("src/images/청대로고.png");
         JLabel labelicon = new JLabel(Cjulogo);
         labelicon.setBounds(800, 10, 300, 50); // 우측 상단에 로고 배치
