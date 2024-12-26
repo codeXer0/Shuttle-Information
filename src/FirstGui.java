@@ -135,7 +135,7 @@ public class FirstGui extends JFrame {
         mainPanel.setComponentZOrder(labelicon, 0);
         mainPanel.setComponentZOrder(backgroundLabel, mainPanel.getComponentCount() - 1); // 맨 아래 배치
 
-        // 교내 셔틀버스 현황 패널 & 셔틀버스 정보 패널 생성
+        // 교내 셔틀버스 현황 패널&셔틀버스 정보 패널 생성
         JPanel campusShuttlePanel = createCampusShuttlePanel();
         JPanel shuttleSchedulePanel = createSchedulePanel();
 
